@@ -135,7 +135,16 @@ class Hangman {
 };
 
 int main() {
-    Hangman game;
-    game.play();
+    char playAgain = 'y'; // Initialize to 'y' to start the first game
+
+    while (std::tolower(playAgain) == 'y') { // Loop as long as the player wants to play again
+        Hangman game;
+        game.play();
+
+        std::cout << "Do you want to play again? (y/n): ";
+        std::cin >> playAgain;
+    }
+
+    std::cout << "Thanks for playing!" << std::endl;
     return 0;
 }
