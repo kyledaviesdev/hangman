@@ -37,28 +37,101 @@ class Hangman {
             }
             displayResult();
         }
-        private:
-            void displayGameState() {
-                std::cout << "\nSecret word: ";
-                for (char letter : secretWord) {
-                    bool found = false;
-                    for (char guessed : guessedLetters) {
-                        if (std::toupper(letter) == std::toupper(guessed)) { // Case-insensitive comparison
-                            std::cout << letter << " ";
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        std::cout << "_ ";
-                    }
-                }
-                std::cout << "\nGuessed letters: ";
+    private:
+        void displayGameState() {
+            std::cout << "\nSecret word: ";
+            for (char letter : secretWord) {
+                bool found = false;
                 for (char guessed : guessedLetters) {
-                    std::cout << guessed << " ";
+                    if (std::toupper(letter) == std::toupper(guessed)) { // Case-insensitive comparison
+                        std::cout << letter << " ";
+                        found = true;
+                        break;
+                    }
                 }
-                std::cout << "\nIncorrect guesses: " << incorrectGuesses << "/" << maxGuesses << std::endl;
+                if (!found) {
+                    std::cout << "_ ";
+                }
             }
+            std::cout << "\nGuessed letters: ";
+            for (char guessed : guessedLetters) {
+                std::cout << guessed << " ";
+            }
+            std::cout << "\nIncorrect guesses: " << incorrectGuesses << "/" << maxGuesses << std::endl;
+        }
+        char getPlayerGuess() {
+            char guess;
+            std::cout << "Enter your guess: ";
+            std::cin >> guess;
+            return guess;
+        }
+        
+        void processGuess(char guess) {
+            guess = std::toupper(guess); // Make guess case-insensitive
+        
+            bool correctGuess = false;
+            for (char letter : secretWord) {
+                if (std::toupper(letter) == guess) {
+                    correctGuess = true;
+                    break;
+                }
+            }
+        
+            if (correctGuess) {
+                bool alreadyGuessed = false;
+                for (char guessed : guessedLetters) {
+                    if (guessed == guess) {
+                        alreadyGuessed = true;
+                        break;
+                    }
+                }
+                if (!alreadyGuessed) {
+                    guessedLetters.push_back(guess);
+                }
+            } else {
+                incorrectGuesses++;
+                bool alreadyGuessed = false;
+                for (char guessed : guessedLetters) {
+                    if (guessed == guess) {
+                        alreadyGuessed = true;
+                        break;
+                    }
+                }
+                 if (!alreadyGuessed) {
+                    guessedLetters.push_back(guess);
+                }
+            }
+        }
+        
+        bool gameOver() {
+            if (incorrectGuesses >= maxGuesses) {
+                return true; // Player lost
+            }
+        
+            bool allLettersGuessed = true;
+            for (char letter : secretWord) {
+                bool found = false;
+                for (char guessed : guessedLetters) {
+                    if (std::toupper(letter) == std::toupper(guessed)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    allLettersGuessed = false;
+                    break;
+                }
+            }
+            return allLettersGuessed; // Player won
+        }
+        
+        void displayResult() {
+            if (incorrectGuesses >= maxGuesses) {
+                std::cout << "\nYou lost! The word was: " << secretWord << std::endl;
+            } else {
+                std::cout << "\nYou won! Congratulations!" << std::endl;
+            }
+        }
 };
 
 int main() {
